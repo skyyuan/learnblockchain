@@ -1,6 +1,6 @@
 ---
 title: 以太坊测试环境编译并部署智能合约
-date: 2018-03-19 20:45:59
+date: 2018-03-21 11:00:59
 categories: 
     - 以太坊
     - 部署智能合约
@@ -23,55 +23,26 @@ solidity是一种看起来像java的语言。它属于强类型（Strong Type，
 ##  开发前准备
 ### 介绍truffle框架
 我们使用当前最活跃的智能合约开发框架truffle为基础来开发。
-就像一般网站或App开发一样，在提供公开服务之前，开发者会在自己用于写程序的电脑（又称作本机）或透过测试网络来测试程序执行的效果，测试完成后，才会部署到公开的网络上提供服务。开发区块链智能合约（程序）的过程也是如此。特别是公开链上所有写入或读取计算结果的操作都需要真金白银（虚拟代币），而且根据网络状况，每个公开链上的操作都需要要一小段反应时间（15秒~数分钟），这些等待颇浪费宝贵的开发时间⏳。因此在开发的过程中，我们将使用testrpc工具在电脑上模拟智能合约所需的以太坊内存块链测试环境。
+就像一般网站或App开发一样，在提供公开服务之前，开发者会在自己用于写程序的电脑（又称作本机）或透过测试网络来测试程序执行的效果，测试完成后，才会部署到公开的网络上提供服务。开发区块链智能合约（程序）的过程也是如此。特别是公开链上所有写入或读取计算结果的操作都需要真金白银（虚拟代币），而且根据网络状况，每个公开链上的操作都需要要一小段反应时间（15秒~数分钟），这些等待颇浪费宝贵的开发时间⏳。因此在开发的过程中，我们将使用Ganache工具在电脑上模拟智能合约所需的以太坊内存块链测试环境。
 
-testrpc中也包含了Javascript版本的Ethereum虚拟机（Ethereum Virtual Machine），因此可以完整地执行智能合约。
+Ganache中也包含了Javascript版本的Ethereum虚拟机（Ethereum Virtual Machine），因此可以完整地执行智能合约。
 
 ### 安装truffle框架
 ```
-npm install -g ethereumjs-testrpc truffle
+npm install -g truffle
 ```
 npm是node中的命令，请自行查阅安装。
-### 启动Testrpc
-装好后使用testrpc命令来启动以太坊测试环境。
-```
-luoxiaohui:~ luoxiaohui$ testrpc
-EthereumJS TestRPC v6.0.3 (ganache-core: 2.0.2)
 
-Available Accounts
-==================
-(0) 0x6d978eee45793329d433ca021bf16dcd25d8f197
-(1) 0xcb275083dd008e768a273a8920a022380762b2bd
-(2) 0x0e5daddcf5e99791966ccd12f316161814efb20c
-(3) 0xd01afe1384c2f0d8a8b03e5d703fae1f1abafa62
-(4) 0x0911ec933b1ffc04d3ee7978553c5f66c6506131
-(5) 0xc5d4d7e1a20bce48393c76f5002715df94d2f183
-(6) 0x53597cf11b0ad5c9be66ae389af47392d61ca3fc
-(7) 0x2fda478ae8fc1cb94d52b3e455c74a6b53df3f49
-(8) 0x4c2bbf8fedef839d91bb57c28912d78b96d574dd
-(9) 0x3228823260c53b7acdf6fe6af133c24c5ce92a8a
+### 安装并启动Ganache
+**truffle之前是跟testrpc配套使用的，但这种方式现在已被摒弃!!!truffle官方强烈推荐使用Ganache替代testrpc。**毕竟，testrpc是在命令行里，而Ganache是有安装包，有图形界面的。
 
-Private Keys
-==================
-(0) 45de0cbbfb657f6478427bf0ddd12e2700428aec43067718f2ac2b90a4ce2554
-(1) 2552f7ee123d44eff0bdb5b401ba065add2aa77c69d6c46c0369bcf1dd9a04b8
-(2) 84f94b39ef71cf708a1d264a3bb6bcdcf1be85661fe2535fa731c947abf6c619
-(3) d9637df135ff5af3b6eb2ad32d891d02a5d31693c8e12321033d143889fd44fb
-(4) 59d49985ac72e8d7c8d7240127277ca8e2a0a2573b5fae1afac7eec9e874d180
-(5) 471adb496803b15075174d582fabc6ed16b7316ec6df4f1f594df4f6e522a232
-(6) 2d75529bff0452d1e31ff39171012c6e0e87a744e3455ee8d32a6d36fd08c22f
-(7) 479586c4b67dec9984f5302a691498c9dff4892e3ac263898ebb37b3cd304aae
-(8) e660f6a0ab46ee1fe7d0d50139fc1f503eccd2f1a29c11b91a200b89e6a027cd
-(9) 80842f75f78fdec838b46429e8525348481c236040af32e1986e114cadc55401
+Ganache下载地址戳[这里]，下载好后，启动Ganache：
 
-HD Wallet
-==================
-Mnemonic:      actress fiber scene camera margin wine rebel size name license example knock
-Base HD Path:  m/44'/60'/0'/0/{account_index}
+![](/images/compile_migrate_1.png)
 
-Listening on localhost:8545
-```
-可以看到testrpc启动后自动建立了10个帐号（Accounts），与每个帐号对应的私钥（Private Key）。每个帐号中都有100个测试用的以太币（Ether）。要注意testrpc仅运行在內存中，因此每次重开时都会回到全新的状态。
+
+[这里]:http://truffleframework.com/ganache/
+可以看到Ganache启动后自动建立了10个帐号（Accounts），每个帐号中都有100个测试用的以太币（Ether）。也可以看到rpcserver(默认是127.0.0.1:7545)，networkId等参数。要注意Ganache仅运行在內存中，因此每次重开时都会回到全新的状态。
 
 ## 创建项目
 开启另一个终端窗口，开始创建项目：
@@ -186,7 +157,7 @@ module.exports = function(deployer) {
   deployer.deploy(HelloWorld);
 };
 ```
-使用`artifacts.require`语句来取得准备部署的合约。使用`deployer.deploy`语句将合约部署到区块链上。这边`HelloWorld`是`contract`的名称而不是文件名。因此可以用此语法读入任一.sol文件中的任一合约。
+使用`artifacts.require`语句来取得准备部署的合约。使用`deployer.deploy`语句将合约部署到区块链上。
 
 现在执行truffle migrate命令：
 ```
@@ -220,12 +191,14 @@ module.exports = {
   networks: {
         development: {
             host: "localhost",
-            port: 8545,
+            port: 7545,
             network_id: "*" // 匹配任何network id
          }
     }
 };
 ```
+这里我们需要在测试环境连接我们的Ganache服务，需要与Ganache上的IP和端口保持一致。
+
 执行truffle migrate命令：
 ```
 luoxiaohui:HelloWorld luoxiaohui$ truffle migrate --reset
@@ -237,35 +210,8 @@ Running migration: 1_initial_migration.js
   HelloWorld: 0x0a57d97d0b44dddb951bbcb36581b13207155c3b
 Saving artifacts...
 ```
-`--reset`表示部署过一次之后，下次再部署，需要添加此属性。切换到testrpc控制台中，不出意外应该有反应了：
-```
-Listening on localhost:8545
-net_version
-eth_accounts
+`--reset`表示部署过一次之后，下次再部署，需要添加此属性。切换到Ganache界面中，不出意外应该就能看到第一个账号消耗了一部分的eth。
 
-eth_sendTransaction
-
-  Transaction: 0xe0f218b68644f6e0f25878db4ae3747f24c1684a08bf00ac06606f875da87403
-  Contract created: 0x0a57d97d0b44dddb951bbcb36581b13207155c3b
-  Gas usage: 142468
-  Block Number: 1
-  Block Time: Sun Mar 11 2018 16:59:30 GMT+0800 (CST)
-
-eth_newBlockFilter
-eth_getFilterChanges
-eth_getTransactionReceipt
-eth_getCode
-eth_uninstallFilter
-net_version
-eth_accounts
-eth_call
-eth_sendTransaction
-
-  Transaction: 0x3e44103d7a50666bec47d86a0978b5bdc915f4730456f3d28e164ef56176720d
-  Gas usage: 21934
-  Block Number: 2
-  Block Time: Sun Mar 11 2018 17:01:41 GMT+0800 (CST)
-```
 ## 与合约互动
 `truffle`提供命令行工具，执行`truffle console`命令后，可用Javascript来和刚刚部署的合约互动。
 ```
@@ -364,7 +310,7 @@ TruffleContract {
         gasPrice: 100000000000 },
      currentProvider: 
       HttpProvider {
-        host: 'http://localhost:8545',
+        host: 'http://localhost:7545',
         timeout: 0,
         user: undefined,
         password: undefined,
